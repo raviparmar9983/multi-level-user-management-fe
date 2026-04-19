@@ -5,11 +5,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { FormInputComponent } from '../components/form-input.component';
 import { AuthService } from '../services/auth.service';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormInputComponent, RecaptchaModule, RecaptchaFormsModule
+  ],
   template: `
     <section class="auth-shell">
       <div class="auth-card">
@@ -47,7 +49,10 @@ import { AuthService } from '../services/auth.service';
           @if (errorMessage) {
             <p class="banner error-banner">{{ errorMessage }}</p>
           }
-
+<re-captcha
+  formControlName="captcha"
+  siteKey="6LcuS78sAAAAAK3zlfptTpSgOEsyewVLHv4-2ROr">
+</re-captcha>
           <button class="primary-btn" type="submit" [disabled]="isSubmitting">
             {{ isSubmitting ? 'Signing in...' : 'Login' }}
           </button>
@@ -88,7 +93,8 @@ export class LoginComponent {
   readonly passwordErrors = { required: 'Password is required.' };
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
+    captcha: ['', Validators.required]
   });
 
   isSubmitting = false;

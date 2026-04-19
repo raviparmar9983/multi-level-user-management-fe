@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -26,6 +26,7 @@ export class TransferBalanceDialogComponent {
   readonly dialogRef = inject(MatDialogRef<TransferBalanceDialogComponent>);
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly form = this.fb.nonNullable.group({
     amount: [200, [Validators.required, Validators.min(1)]]
@@ -62,9 +63,12 @@ export class TransferBalanceDialogComponent {
       next: () => {
         this.dialogRef.close(true);
       },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.errorMessage = error.error?.message ?? 'Unable to transfer balance right now.';
+      error: (error: any) => {
+        const serverMessage = error?.error?.message ?? error?.error ?? error?.message;
+        this.errorMessage = typeof serverMessage === 'string'
+          ? serverMessage
+          : 'Unable to transfer balance right now.';
+        this.cdr.markForCheck();
       }
     });
   }

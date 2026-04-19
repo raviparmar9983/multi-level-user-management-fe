@@ -1,0 +1,13 @@
+<section class="page-shell">
+  <div class="page-card">
+    <p class="eyebrow">Admin only</p>
+    <h1>Admin Panel</h1>
+    <p>Only users with the <strong>ADMIN</strong> role can open this route.</p>
+    <p>Current role: <strong>{{ authService.getUserRole() }}</strong></p>
+
+    <div class="actions">
+      <a class="link-btn" routerLink="/dashboard">Back to dashboard</a>
+      <button class="ghost-btn" type="button" (click)="authService.logout()">Logout</button>
+    </div>
+  </div>
+</section>

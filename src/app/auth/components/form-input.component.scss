@@ -1,0 +1,32 @@
+.field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.label {
+  color: #1f2937;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #d0d7de;
+  border-radius: 0.85rem;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.85rem;
+}

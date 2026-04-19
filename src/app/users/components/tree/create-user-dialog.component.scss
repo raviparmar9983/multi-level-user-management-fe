@@ -1,0 +1,16 @@
+.dialog-form {
+  display: grid;
+  gap: 1rem;
+  min-width: min(100%, 26rem);
+  padding-top: 0.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.error-text {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}

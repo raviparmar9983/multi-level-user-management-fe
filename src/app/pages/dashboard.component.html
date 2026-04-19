@@ -1,0 +1,213 @@
+<section class="page-shell">
+  <div class="page-card">
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">{{ isUserDashboard ? 'User dashboard' : 'Protected area' }}</p>
+        <h1>Dashboard</h1>
+        <p class="subtle">
+          Signed in as <strong>{{ role ?? 'UNKNOWN' }}</strong>
+          @if (userId) {
+            <span class="user-id">&bull; {{ userId }}</span>
+          }
+        </p>
+      </div>
+
+      <button class="ghost-btn" type="button" (click)="logout()">Logout</button>
+    </div>
+
+    @if (isUserDashboard) {
+      <div class="overview-grid">
+        <article class="hero-card balance-card">
+          <div class="card-head">
+            <div>
+              <p class="card-label">Available balance</p>
+              @if (isLoadingBalance) {
+                <div class="skeleton skeleton-balance"></div>
+              } @else {
+                <h2>{{ balance | currency:'INR':'symbol':'1.2-2' }}</h2>
+              }
+            </div>
+
+            <span class="pill">Wallet</span>
+          </div>
+
+          @if (balanceError) {
+            <p class="inline-error">{{ balanceError }}</p>
+            <button class="text-btn" type="button" (click)="retryBalance()">Try again</button>
+          } @else {
+            <p class="card-copy">This balance is fetched live from your wallet service.</p>
+          }
+        </article>
+
+        <article class="hero-card stats-card">
+          <p class="card-label">Transactions loaded</p>
+          <h2>{{ transactions.length }}</h2>
+          <p class="card-copy">Showing {{ transactions.length }} of {{ totalTransactions }} total transactions.</p>
+          <div class="action-group">
+            <button class="primary-btn recharge-trigger" type="button" (click)="openRechargeModal()">Recharge balance</button>
+            <a class="ghost-btn action-link" routerLink="/users">Show users</a>
+          </div>
+        </article>
+      </div>
+
+      <section class="transactions-card">
+        <div class="section-header">
+          <div>
+            <p class="card-label">Recent transactions</p>
+            <h2>Activity timeline</h2>
+          </div>
+
+          @if (isLoadingMore) {
+            <span class="pill">Loading more...</span>
+          } @else if (!hasMoreTransactions && transactions.length > 0) {
+            <span class="pill pill-muted">All caught up</span>
+          }
+        </div>
+
+        @if (transactionsError && transactions.length === 0) {
+          <div class="feedback-card error-state">
+            <h3>Transactions couldn't be loaded</h3>
+            <p>{{ transactionsError }}</p>
+            <button class="primary-btn" type="button" (click)="retryTransactions()">Retry</button>
+          </div>
+        } @else if (showInitialTransactionsLoader) {
+          <div class="transactions-list">
+            @for (_ of [1, 2, 3, 4]; track $index) {
+              <div class="transaction-row skeleton-row">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-sm"></div>
+              </div>
+            }
+          </div>
+        } @else if (transactions.length === 0) {
+          <div class="feedback-card empty-state">
+            <h3>No transactions yet</h3>
+            <p>Your transaction history will appear here as soon as wallet activity starts.</p>
+          </div>
+        } @else {
+          <div class="transactions-list">
+            @for (transaction of transactions; track trackByTransactionId($index, transaction)) {
+              <article class="transaction-row">
+                <div class="transaction-main">
+                  <div class="transaction-icon" [class.credit]="transaction.type === 'CREDIT'" [class.debit]="transaction.type === 'DEBIT'">
+                    {{ transaction.type === 'CREDIT' ? 'CR' : 'DR' }}
+                  </div>
+
+                  <div>
+                    <h3>{{ transaction.description }}</h3>
+                    <p>{{ transaction.createdAt | date:'medium' }}</p>
+                  </div>
+                </div>
+
+                <div class="amount-block">
+                  <strong [class.credit-text]="transaction.type === 'CREDIT'" [class.debit-text]="transaction.type === 'DEBIT'">
+                    {{ getTransactionAmountPrefix(transaction) }}{{ transaction.amount | currency:'INR':'symbol':'1.2-2' }}
+                  </strong>
+                  <span>{{ transaction.type }}</span>
+                </div>
+              </article>
+            }
+          </div>
+
+          @if (transactionsError && transactions.length > 0) {
+            <div class="inline-banner">
+              <p>{{ transactionsError }}</p>
+              <button class="text-btn" type="button" (click)="retryTransactions()">Retry</button>
+            </div>
+          }
+
+          <div #scrollAnchor class="scroll-anchor" aria-hidden="true"></div>
+
+          @if (isLoadingMore) {
+            <div class="loading-footer">Loading more transactions...</div>
+          } @else if (!hasMoreTransactions) {
+            <div class="loading-footer done">You've reached the end of your transaction history.</div>
+          }
+        }
+      </section>
+    } @else {
+      <div class="admin-grid">
+        <article class="hero-card">
+          <p class="card-label">Admin access</p>
+          <h2>Dashboard access confirmed</h2>
+          <p class="card-copy">User wallet APIs are not called for admins. Use the admin area for privileged actions.</p>
+        </article>
+
+        <article class="hero-card">
+          <p class="card-label">Navigation</p>
+          <h2>Continue to admin panel</h2>
+          <p class="card-copy">Role-based access is active and your admin route is available.</p>
+          <a class="primary-btn" routerLink="/admin">Open admin panel</a>
+        </article>
+      </div>
+    }
+  </div>
+</section>
+
+@if (isUserDashboard && isRechargeModalOpen) {
+  <div class="modal-backdrop" (click)="closeRechargeModalFromBackdrop($event)">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="recharge-modal-title">
+      <div class="modal-header">
+        <div>
+          <p class="card-label">Wallet recharge</p>
+          <h2 id="recharge-modal-title">Add balance</h2>
+        </div>
+
+        <button class="icon-btn" type="button" aria-label="Close recharge modal" (click)="closeRechargeModal()">&times;</button>
+      </div>
+
+      <form class="recharge-form" [formGroup]="rechargeForm" (ngSubmit)="submitRecharge()">
+        <label class="field">
+          <span>Amount</span>
+          <input class="input" type="number" min="1" formControlName="amount" placeholder="Enter amount" />
+          @if (getControlError('amount')) {
+            <small class="field-error">{{ getControlError('amount') }}</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Card number</span>
+          <input class="input" type="text" inputmode="numeric" maxlength="16" formControlName="cardNumber" placeholder="4111111111111111" />
+          @if (getControlError('cardNumber')) {
+            <small class="field-error">{{ getControlError('cardNumber') }}</small>
+          }
+        </label>
+
+        <div class="recharge-row">
+          <label class="field">
+            <span>Expiry</span>
+            <input class="input" type="text" maxlength="5" formControlName="expiry" placeholder="12/26" />
+            @if (getControlError('expiry')) {
+              <small class="field-error">{{ getControlError('expiry') }}</small>
+            }
+          </label>
+
+          <label class="field">
+            <span>CVV</span>
+            <input class="input" type="password" inputmode="numeric" maxlength="4" formControlName="cvv" placeholder="123" />
+            @if (getControlError('cvv')) {
+              <small class="field-error">{{ getControlError('cvv') }}</small>
+            }
+          </label>
+        </div>
+
+        @if (rechargeSuccess) {
+          <div class="status-banner success-banner">{{ rechargeSuccess }}</div>
+        }
+
+        @if (rechargeError) {
+          <div class="status-banner error-banner">{{ rechargeError }}</div>
+        }
+
+        <div class="recharge-actions">
+          <button class="primary-btn" type="submit" [disabled]="isSubmittingRecharge">
+            {{ isSubmittingRecharge ? 'Processing recharge...' : 'Recharge balance' }}
+          </button>
+          <button class="ghost-btn secondary-action" type="button" (click)="closeRechargeModal()">Close</button>
+        </div>
+
+        <p class="helper-text">After a successful recharge, balance and transaction history refresh automatically and this modal closes for you.</p>
+      </form>
+    </section>
+  </div>
+}

@@ -1,0 +1,15 @@
+<div class="field">
+  <label class="label" [for]="id">{{ label }}</label>
+  <input
+    class="input"
+    [id]="id"
+    [type]="type"
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [autocomplete]="autocomplete"
+  />
+
+  @if (showError) {
+    <p class="error">{{ firstError }}</p>
+  }
+</div>

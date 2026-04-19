@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: #0f172a;
+  background:
+    radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 28rem),
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.16), transparent 24rem),
+    linear-gradient(180deg, #f8fbff 0%, #eef4f8 100%);
+}
+
+button,
+input,
+a,
+textarea {
+  font: inherit;
+}

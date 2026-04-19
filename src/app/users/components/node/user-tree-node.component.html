@@ -1,0 +1,66 @@
+<mat-card class="node-card" [class.expanded]="node.isExpanded">
+  <div class="node-layout" style="padding: 6px;">
+    <div class="node-main">
+      <button
+        mat-icon-button
+        type="button"
+        class="expand-btn"
+        [disabled]="!node.hasChildren && !node.isExpanded && !node.isLoadingChildren"
+        [attr.aria-label]="node.isExpanded ? 'Collapse node' : 'Expand node'"
+        (click)="toggleNode.emit()"
+      >
+        @if (node.isLoadingChildren) {
+          <mat-spinner diameter="18"></mat-spinner>
+        } @else {
+          <span class="chevron">{{ node.isExpanded ? 'v' : '>' }}</span>
+        }
+      </button>
+
+      <div class="identity">
+        <div class="title-row">
+          <h3>{{ node.name }}</h3>
+          @if (node.isRootNode) {
+            <span class="badge">Current user</span>
+          }
+        </div>
+
+        <div class="details-row">
+          <span class="detail-chip">
+            <span class="detail-label">Balance</span>
+            <strong>{{ node.balance | currency:'INR':'symbol':'1.2-2' }}</strong>
+          </span>
+          <span class="detail-chip">
+            <span class="detail-label">Level {{ node.level }}</span>
+          </span>
+          <span class="detail-chip muted">
+            <span>{{ childCountLabel }}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    @if (node.isRootNode) {
+      <div class="node-actions">
+        <button mat-stroked-button type="button" color="primary" (click)="addChild.emit()">
+          Add user
+        </button>
+      </div>
+    } @else if (canManageImmediateChild) {
+      <div class="node-actions child-actions">
+        <button mat-stroked-button type="button" color="primary" (click)="transferBalance.emit()">
+          Transfer
+        </button>
+        <button mat-stroked-button type="button" (click)="changePassword.emit()">
+          Password
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (node.childrenError) {
+    <div class="inline-state error">
+      <span>{{ node.childrenError }}</span>
+      <button mat-button type="button" color="warn" (click)="retryLoad.emit()">Retry</button>
+    </div>
+  }
+</mat-card>

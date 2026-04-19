@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Add child user</h2>
+
+<mat-dialog-content>
+  <form class="dialog-form" [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="Child user name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Name is required.</mat-error>
+      } @else if (form.controls.name.hasError('minlength')) {
+        <mat-error>Name must be at least 2 characters.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" placeholder="child@example.com" />
+      @if (form.controls.email.hasError('required')) {
+        <mat-error>Email is required.</mat-error>
+      } @else if (form.controls.email.hasError('email')) {
+        <mat-error>Enter a valid email address.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" placeholder="Enter password" />
+      @if (form.controls.password.hasError('required')) {
+        <mat-error>Password is required.</mat-error>
+      } @else if (form.controls.password.hasError('minlength')) {
+        <mat-error>Password must be at least 6 characters.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage) {
+      <p class="error-text">{{ errorMessage }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="isSubmitting" (click)="dialogRef.close(false)">Cancel</button>
+  <button mat-flat-button color="primary" type="button" [disabled]="isSubmitting" (click)="submit()">
+    {{ isSubmitting ? 'Creating...' : 'Create user' }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Transfer balance</h2>
+
+<mat-dialog-content>
+  <p class="dialog-copy">Credit balance to <strong>{{ data.userName }}</strong>.</p>
+
+  <form class="dialog-form" [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" min="1" formControlName="amount" placeholder="Enter amount" />
+      @if (form.controls.amount.hasError('required')) {
+        <mat-error>Amount is required.</mat-error>
+      } @else if (form.controls.amount.hasError('min')) {
+        <mat-error>Amount must be greater than 0.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage) {
+      <p class="error-text">{{ errorMessage }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="isSubmitting" (click)="dialogRef.close(false)">Cancel</button>
+  <button mat-flat-button color="primary" type="button" [disabled]="isSubmitting" (click)="submit()">
+    {{ isSubmitting ? 'Transferring...' : 'Transfer' }}
+  </button>
+</mat-dialog-actions>

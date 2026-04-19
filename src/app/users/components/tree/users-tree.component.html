@@ -1,0 +1,52 @@
+<section class="users-page">
+  <div class="users-shell">
+    <header class="page-header">
+      <div class="page-copy">
+        <p class="eyebrow">Hierarchy</p>
+        <h1>Users Tree</h1>
+        <p class="subtle">The current user opens by default. Expand any card to load direct children branch by branch.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <div class="summary-pill">
+          <span class="summary-label">Visible</span>
+          <strong>{{ visibleUserCount }}</strong>
+        </div>
+        <a mat-stroked-button routerLink="/dashboard">Back</a>
+        <button mat-flat-button color="primary" type="button" (click)="openCreateUserDialog()">Add child user</button>
+      </div>
+    </header>
+
+    @if (isPageLoading) {
+    <div class="page-state loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading your hierarchy...</p>
+    </div>
+    } @else if (pageError) {
+    <div class="page-state error">
+      <p>{{ pageError }}</p>
+      <button mat-flat-button color="primary" type="button" (click)="retryPage()">Retry</button>
+    </div>
+    } @else {
+    <section class="tree-stage">
+      <mat-tree class="users-tree" [dataSource]="visibleNodes" [treeControl]="treeControl" [trackBy]="trackByTreeItem">
+        <mat-tree-node *matTreeNodeDef="let node; when: isUserNode" matTreeNodePadding [matTreeNodePaddingIndent]="24">
+          <app-user-tree-node [id]="currentUserId ?? ''" [node]="node" (toggleNode)="toggleNode(node)"
+            (retryLoad)="retryNode(node)" (addChild)="openCreateUserDialog()"
+            (transferBalance)="openTransferBalanceDialog(node)" (changePassword)="openChangePasswordDialog(node)" />
+        </mat-tree-node>
+
+        <mat-tree-node *matTreeNodeDef="let node; when: isLoadMoreNode" matTreeNodePadding
+          [matTreeNodePaddingIndent]="24">
+          <div class="load-more-row">
+            <button mat-button color="primary" type="button" (click)="loadMore(node)">
+              Load more
+            </button>
+          </div>
+        </mat-tree-node>
+      </mat-tree>
+    </section>
+    }
+  </div>
+</section>

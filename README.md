@@ -1,27 +1,49 @@
 # MultiLevelUserManagement
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+This is an Angular application for multi-level user management with admin hierarchy and transfer workflows.
 
-## Development server
+## Prerequisites
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js 18+ installed
+- npm 10+ installed
+- A backend API running at `http://localhost:3000` or the URL configured in `src/environments/environment.ts`
 
-## Code scaffolding
+## Setup and run
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Open a terminal in the project folder:
+   ```bash
+   cd "c:\\Users\\ranjan go\\Desktop\\New folder (2)\\multi-level-user-management\\multi-level-user-management"
+   ```
 
-## Build
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-## Running unit tests
+4. Open the app in your browser:
+   ```
+   http://localhost:4200/
+   ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## If the backend API is not running
 
-## Running end-to-end tests
+- Ensure the API is available at `http://localhost:3000`
+- If the backend uses a different host or port, update `src/environments/environment.ts` and `src/environments/environment.development.ts`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Common commands
 
-## Further help
+- `npm start` - start the Angular development server
+- `npm run build` - build the app for production
+- `npm test` - run unit tests
+- `npm run lint` - run linter (if configured)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Notes
+
+- The app uses Angular standalone components and Material styling.
+- User authentication depends on the login API returning `accessToken`, `refreshToken`, and `user` information.
+- If you change environment settings, restart the dev server.

@@ -6,6 +6,13 @@ import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 
 export type UserRole = 'ADMIN' | 'USER';
 
+export interface UserInfo {
+  userId: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
+
 interface JwtPayload {
   userId: string;
   role: UserRole;
@@ -15,6 +22,10 @@ interface JwtPayload {
 export interface AuthTokens {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface AuthResponse extends AuthTokens {
+  user: UserInfo;
 }
 
 export interface LoginPayload {
@@ -41,6 +52,7 @@ export class AuthService {
 
   private readonly accessTokenKey = 'auth_access_token';
   private readonly refreshTokenKey = 'auth_refresh_token';
+  private readonly userStorageKey = 'auth_user';
   private readonly authStateSubject = new BehaviorSubject<AuthState>(this.buildAuthState());
   private refreshTokenRequest$: Observable<AuthTokens> | null = null;
 
@@ -51,9 +63,9 @@ export class AuthService {
     return this.http.post<void>(API_ENDPOINTS.auth.register, payload);
   }
 
-  login(payload: LoginPayload): Observable<AuthTokens> {
-    return this.http.post<AuthTokens>(API_ENDPOINTS.auth.login, payload).pipe(
-      tap((tokens) => this.setSession(tokens))
+  login(payload: LoginPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.login, payload).pipe(
+      tap((response) => this.setSession(response, response.user))
     );
   }
 
@@ -99,6 +111,7 @@ export class AuthService {
   logout(redirectTo = '/login'): void {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
+    localStorage.removeItem(this.userStorageKey);
     this.authStateSubject.next({ isAuthenticated: false, role: null, userId: null });
     void this.router.navigateByUrl(redirectTo);
   }
@@ -131,48 +144,41 @@ export class AuthService {
     return this.getUserRole() === role || this.isAdmin();
   }
 
-  private setSession(tokens: AuthTokens): void {
+  private setSession(tokens: AuthTokens, user?: UserInfo): void {
     localStorage.setItem(this.accessTokenKey, tokens.accessToken);
     localStorage.setItem(this.refreshTokenKey, tokens.refreshToken);
-    this.authStateSubject.next(this.buildAuthState(tokens.accessToken));
-  }
 
-  private buildAuthState(accessToken = this.getAccessToken()): AuthState {
-    if (!accessToken) {
-      return { isAuthenticated: false, role: null, userId: null };
+    if (user) {
+      localStorage.setItem(this.userStorageKey, JSON.stringify(user));
     }
 
-    const payload = this.decodeToken(accessToken);
+    this.authStateSubject.next(this.buildAuthState());
+  }
 
-    if (!payload || this.isTokenExpired(payload)) {
+  private buildAuthState(): AuthState {
+    const accessToken = this.getAccessToken();
+    const storedUser = this.getStoredUser();
+
+    if (!accessToken || !storedUser) {
       localStorage.removeItem(this.accessTokenKey);
       localStorage.removeItem(this.refreshTokenKey);
+      localStorage.removeItem(this.userStorageKey);
       return { isAuthenticated: false, role: null, userId: null };
     }
 
     return {
       isAuthenticated: true,
-      role: payload.role,
-      userId: payload.userId
+      role: storedUser.role,
+      userId: storedUser.userId
     };
   }
 
-  private decodeToken(token: string): JwtPayload | null {
+  private getStoredUser(): UserInfo | null {
     try {
-      const payload = token.split('.')[1];
-      if (!payload) {
-        return null;
-      }
-
-      const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
-      const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=');
-      return JSON.parse(atob(padded)) as JwtPayload;
+      const json = localStorage.getItem(this.userStorageKey);
+      return json ? JSON.parse(json) as UserInfo : null;
     } catch {
       return null;
     }
-  }
-
-  private isTokenExpired(payload: JwtPayload): boolean {
-    return typeof payload.exp === 'number' ? payload.exp * 1000 <= Date.now() : false;
   }
 }

@@ -5,6 +5,8 @@ export const environment = {
     auth: '/api/auth',
     users: '/api/users',
     wallet: '/api/wallet',
-    transactions: '/api/transactions'
+    transactions: '/api/transactions',
+    adminUsers: '/api/admin/users',
+    adminTransfer: '/api/admin/transfer'
   }
 };

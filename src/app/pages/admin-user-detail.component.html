@@ -1,0 +1,16 @@
+<section class="admin-user-detail">
+  <div class="detail-header">
+    <div>
+      <p class="eyebrow">Admin hierarchy</p>
+      <h1>{{ selectedUserName || 'Selected user' }}</h1>
+      <div class="user-meta">
+        <span class="selected-user-badge">ID: {{ selectedUserId }}</span>
+      </div>
+    </div>
+    <div>
+      <a mat-stroked-button routerLink="/dashboard">Back to users</a>
+    </div>
+  </div>
+
+  <app-admin-user-tree *ngIf="selectedUserId" [userId]="selectedUserId"></app-admin-user-tree>
+</section>

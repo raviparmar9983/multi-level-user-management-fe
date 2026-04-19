@@ -1,3 +1,4 @@
+import { AdminUserDetailComponent } from './pages/admin-user-detail.component';
 import { Routes } from '@angular/router';
 import { authGuard } from './auth/guards/auth.guard';
 import { roleGuard } from './auth/guards/role.guard';
@@ -6,7 +7,6 @@ import { LoginComponent } from './auth/pages/login.component';
 import { RegisterComponent } from './auth/pages/register.component';
 import { ResetPasswordComponent } from './auth/pages/reset-password.component';
 import { VerifyEmailComponent } from './auth/pages/verify-email.component';
-import { AdminComponent } from './pages/admin.component';
 import { DashboardComponent } from './pages/dashboard.component';
 
 export const routes: Routes = [
@@ -24,10 +24,10 @@ export const routes: Routes = [
       import('./users/components/tree/users-tree.component').then((module) => module.UsersTreeComponent)
   },
   {
-    path: 'admin',
-    component: AdminComponent,
+    path: 'admin/user/:id',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ADMIN'] }
+    data: { roles: ['ADMIN'] },
+    component: AdminUserDetailComponent
   },
   { path: '**', redirectTo: 'login' }
 ];

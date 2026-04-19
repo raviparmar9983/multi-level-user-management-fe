@@ -19,9 +19,6 @@
       <div class="identity">
         <div class="title-row">
           <h3>{{ node.name }}</h3>
-          @if (node.isRootNode) {
-            <span class="badge">Current user</span>
-          }
         </div>
 
         <div class="details-row">
@@ -39,26 +36,11 @@
       </div>
     </div>
 
-    @if (node.isRootNode && showAddChild) {
-      <div class="node-actions">
-        <button mat-stroked-button type="button" color="primary" (click)="addChild.emit()">
-          Add user
-        </button>
-      </div>
-    } @else if (shouldShowTransferAction || shouldShowChangePasswordAction) {
-      <div class="node-actions child-actions">
-        @if (shouldShowTransferAction) {
-          <button mat-stroked-button type="button" color="primary" (click)="transferBalance.emit()">
-            Transfer
-          </button>
-        }
-        @if (shouldShowChangePasswordAction) {
-          <button mat-stroked-button type="button" (click)="changePassword.emit()">
-            Password
-          </button>
-        }
-      </div>
-    }
+    <div class="node-actions child-actions">
+      <button mat-stroked-button type="button" color="primary" (click)="transferBalance.emit()">
+        Transfer
+      </button>
+    </div>
   </div>
 
   @if (node.childrenError) {

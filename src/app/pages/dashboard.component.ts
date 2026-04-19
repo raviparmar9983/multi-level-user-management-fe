@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { AuthService } from '../auth/services/auth.service';
 import { Transaction } from '../users/models/transaction.model';
 import { WalletService } from '../users/services/wallet.service';
+import { AdminUsersListComponent } from './admin-users-list.component';
 
 function expiryValidator(control: AbstractControl): ValidationErrors | null {
   const value = String(control.value ?? '').trim();
@@ -28,7 +29,7 @@ function expiryValidator(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AdminUsersListComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

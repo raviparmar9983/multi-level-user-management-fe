@@ -1,0 +1,43 @@
+<div class="admin-user-tree">
+  @if (isPageLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading user hierarchy...</p>
+    </div>
+  } @else if (pageError) {
+    <mat-card class="error-state">
+      <p>{{ pageError }}</p>
+      <button mat-raised-button color="primary" (click)="retryPage()">Retry</button>
+    </mat-card>
+  } @else if (rootNode) {
+    <div class="tree-container">
+      @for (node of visibleNodes; track trackByTreeItem($index, node)) {
+        @if (isUserNode(0, node)) {
+          <div class="tree-node-wrapper" [style.margin-left.px]="(node.treeLevel * 24)">
+            <app-admin-user-tree-node
+              [id]="userId"
+              [node]="node"
+              (toggleNode)="toggleNode(node)"
+              (transferBalance)="openTransferBalanceDialog(node)"
+              (retryLoad)="retryNode(node)"
+            ></app-admin-user-tree-node>
+          </div>
+        } @else if (isLoadMoreNode(0, node)) {
+          <div class="load-more-node-wrapper" [style.margin-left.px]="(node.treeLevel * 24)">
+            <button mat-button color="primary" (click)="loadMore(node)">
+              Load more children
+            </button>
+          </div>
+        }
+      }
+
+      <div class="tree-summary">
+        <p>Total users visible: {{ visibleUserCount }}</p>
+      </div>
+    </div>
+  } @else {
+    <mat-card class="empty-state">
+      <p>No user hierarchy data available.</p>
+    </mat-card>
+  }
+</div>

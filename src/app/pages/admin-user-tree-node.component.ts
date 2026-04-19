@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-export interface UserTreeNodeViewModel {
+export interface AdminUserTreeNodeViewModel {
   kind: 'user';
   id: string;
   name: string;
@@ -17,29 +17,22 @@ export interface UserTreeNodeViewModel {
   childrenError: string | null;
   totalChildren: number;
   hasNextPage: boolean;
-  isRootNode: boolean;
   parentId: string | null;
 }
 
 @Component({
-  selector: 'app-user-tree-node',
+  selector: 'app-admin-user-tree-node',
   standalone: true,
   imports: [CommonModule, CurrencyPipe, MatButtonModule, MatCardModule, MatProgressSpinnerModule],
-  templateUrl: './user-tree-node.component.html',
-  styleUrl: './user-tree-node.component.scss',
+  templateUrl: './admin-user-tree-node.component.html',
+  styleUrl: './admin-user-tree-node.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserTreeNodeComponent {
+export class AdminUserTreeNodeComponent {
   @Input({ required: true }) id!: string;
-  @Input({ required: true }) node!: UserTreeNodeViewModel;
-  @Input() showAddChild = true;
-  @Input() showTransfer = false;
-  @Input() showTransferForAll = false;
-  @Input() showChangePassword = false;
+  @Input({ required: true }) node!: AdminUserTreeNodeViewModel;
   @Output() toggleNode = new EventEmitter<void>();
-  @Output() addChild = new EventEmitter<void>();
   @Output() transferBalance = new EventEmitter<void>();
-  @Output() changePassword = new EventEmitter<void>();
   @Output() retryLoad = new EventEmitter<void>();
 
   get childCountLabel(): string {
@@ -52,17 +45,5 @@ export class UserTreeNodeComponent {
     }
 
     return this.node.hasChildren ? 'Children available' : 'No direct children';
-  }
-
-  get canManageImmediateChild(): boolean {
-    return !this.node.isRootNode && this.node.parentId === this.id;
-  }
-
-  get shouldShowTransferAction(): boolean {
-    return this.showTransfer && (this.showTransferForAll || this.canManageImmediateChild);
-  }
-
-  get shouldShowChangePasswordAction(): boolean {
-    return this.showChangePassword && this.canManageImmediateChild;
   }
 }

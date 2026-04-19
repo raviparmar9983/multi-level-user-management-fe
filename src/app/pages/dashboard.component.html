@@ -126,20 +126,7 @@
         }
       </section>
     } @else {
-      <div class="admin-grid">
-        <article class="hero-card">
-          <p class="card-label">Admin access</p>
-          <h2>Dashboard access confirmed</h2>
-          <p class="card-copy">User wallet APIs are not called for admins. Use the admin area for privileged actions.</p>
-        </article>
-
-        <article class="hero-card">
-          <p class="card-label">Navigation</p>
-          <h2>Continue to admin panel</h2>
-          <p class="card-copy">Role-based access is active and your admin route is available.</p>
-          <a class="primary-btn" routerLink="/admin">Open admin panel</a>
-        </article>
-      </div>
+      <app-admin-users-list></app-admin-users-list>
     }
   </div>
 </section>

@@ -1,0 +1,79 @@
+.admin-user-tree {
+  padding: 1rem 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  min-height: 200px;
+
+  p {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.95rem;
+  }
+}
+
+.error-state,
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+
+  p {
+    margin: 0 0 1rem 0;
+    color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.error-state {
+  border-left: 4px solid #d32f2f;
+  background: rgba(211, 47, 47, 0.05);
+
+  p {
+    color: #d32f2f;
+  }
+}
+
+.tree-container {
+  mat-tree {
+    display: block;
+  }
+
+  mat-tree-node {
+    display: block;
+    padding: 0.25rem 0;
+
+    &.load-more-node {
+      padding: 0.5rem 0;
+      margin-left: 2rem;
+    }
+  }
+}
+
+.tree-summary {
+  padding: 1rem 0;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-user-tree {
+    padding: 0.5rem 0;
+  }
+
+  .loading-state {
+    min-height: 150px;
+  }
+}

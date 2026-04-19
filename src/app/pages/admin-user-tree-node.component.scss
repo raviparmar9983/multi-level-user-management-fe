@@ -1,0 +1,118 @@
+.node-card {
+  margin-bottom: 0.75rem;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+
+  &.expanded {
+    border-left-color: #1976d2;
+  }
+}
+
+.node-layout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-be tween;
+}
+
+.node-main {
+  display: flex;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.expand-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+
+  .chevron {
+    display: inline-block;
+    width: 1.2rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    word-break: break-word;
+  }
+}
+
+.details-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.detail-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  font-size: 0.85rem;
+
+  .detail-label {
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  &.muted {
+    opacity: 0.6;
+  }
+}
+
+.node-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  &.child-actions {
+    align-self: center;
+  }
+}
+
+.inline-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+
+  &.error {
+    background: rgba(211, 47, 47, 0.08);
+    color: #d32f2f;
+  }
+}
+
+@media (max-width: 600px) {
+  .node-layout {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .node-actions {
+    justify-content: flex-start;
+  }
+}

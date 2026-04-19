@@ -21,6 +21,11 @@ export interface ChildrenPagination {
 export interface UserChildrenResponse {
   data: UserTreeApiNode[];
   pagination: ChildrenPagination;
+  user: {
+    balance: number;
+    name: string;
+    level: number;
+  }
 }
 
 export interface CreateChildUserPayload {
@@ -32,6 +37,19 @@ export interface CreateChildUserPayload {
 export interface TransferBalancePayload {
   userId: string;
   amount: number;
+}
+
+export interface AdminUsersPagination {
+  page: number;
+  limit: number;
+  total: number;
+  hasNext: boolean;
+}
+
+export interface AdminUsersResponse {
+  success: true;
+  users: UserTreeApiNode[];
+  pagination: AdminUsersPagination;
 }
 
 export interface ChangeChildPasswordPayload {
@@ -55,8 +73,20 @@ export class UserService {
     return this.http.post(API_ENDPOINTS.users.base, payload);
   }
 
+  getAdminUsers(page: number, limit: number): Observable<AdminUsersResponse> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit);
+
+    return this.http.get<AdminUsersResponse>(API_ENDPOINTS.adminUsers, { params });
+  }
+
   transferBalance(payload: TransferBalancePayload): Observable<unknown> {
     return this.http.post(API_ENDPOINTS.wallet.transfer, payload);
+  }
+
+  transferBalanceAdmin(payload: TransferBalancePayload): Observable<unknown> {
+    return this.http.post(API_ENDPOINTS.adminTransfer, payload);
   }
 
   changeChildPassword(payload: ChangeChildPasswordPayload): Observable<unknown> {

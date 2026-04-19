@@ -11,6 +11,7 @@ import { UserService } from '../../services/user.service';
 interface TransferDialogData {
   userId: string;
   userName: string;
+  isAdminTransfer?: boolean;
 }
 
 @Component({
@@ -33,7 +34,7 @@ export class TransferBalanceDialogComponent {
   isSubmitting = false;
   errorMessage = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) readonly data: TransferDialogData) {}
+  constructor(@Inject(MAT_DIALOG_DATA) readonly data: TransferDialogData) { }
 
   submit(): void {
     if (this.form.invalid) {
@@ -44,10 +45,16 @@ export class TransferBalanceDialogComponent {
     this.errorMessage = '';
     this.isSubmitting = true;
 
-    this.userService.transferBalance({
+    const payload = {
       userId: this.data.userId,
       amount: this.form.getRawValue().amount
-    }).pipe(
+    };
+
+    const transferObs = this.data.isAdminTransfer
+      ? this.userService.transferBalanceAdmin(payload)
+      : this.userService.transferBalance(payload);
+
+    transferObs.pipe(
       finalize(() => {
         this.isSubmitting = false;
       })
@@ -56,6 +63,7 @@ export class TransferBalanceDialogComponent {
         this.dialogRef.close(true);
       },
       error: (error) => {
+        this.isSubmitting = false;
         this.errorMessage = error.error?.message ?? 'Unable to transfer balance right now.';
       }
     });

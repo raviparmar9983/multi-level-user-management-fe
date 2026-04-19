@@ -1,0 +1,30 @@
+<section class="hierarchy-shell">
+  @if (isPageLoading) {
+    <div class="page-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading user hierarchy...</p>
+    </div>
+  } @else if (pageError) {
+    <div class="page-state">
+      <p>{{ pageError }}</p>
+      <button mat-flat-button color="primary" type="button" (click)="retryPage()">Retry</button>
+    </div>
+  } @else {
+    <mat-tree class="users-tree" [dataSource]="visibleNodes" [treeControl]="treeControl" [trackBy]="trackByTreeItem">
+      <mat-tree-node *matTreeNodeDef="let node; when: isUserNode" matTreeNodePadding [matTreeNodePaddingIndent]="24">
+        <app-user-tree-node [id]="userId" [node]="node" [showAddChild]="false" [showTransfer]="true"
+          [showTransferForAll]="true" [showChangePassword]="false"
+          (toggleNode)="toggleNode(node)" (retryLoad)="retryNode(node)"
+          (transferBalance)="openTransferBalanceDialog(node)" />
+      </mat-tree-node>
+
+      <mat-tree-node *matTreeNodeDef="let node; when: isLoadMoreNode" matTreeNodePadding [matTreeNodePaddingIndent]="24">
+        <div class="load-more-row">
+          <button mat-button color="primary" type="button" (click)="loadMore(node)">
+            Load more
+          </button>
+        </div>
+      </mat-tree-node>
+    </mat-tree>
+  }
+</section>

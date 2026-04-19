@@ -22,6 +22,8 @@ export const API_ENDPOINTS = {
     recharge: joinUrl(environment.api.baseUrl, `${environment.api.wallet}/recharge`),
     transfer: joinUrl(environment.api.baseUrl, `${environment.api.wallet}/transfer`)
   },
+  adminUsers: joinUrl(environment.api.baseUrl, environment.api.adminUsers),
+  adminTransfer: joinUrl(environment.api.baseUrl, environment.api.adminTransfer),
   transactions: {
     base: joinUrl(environment.api.baseUrl, environment.api.transactions)
   }

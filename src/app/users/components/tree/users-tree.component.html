@@ -32,8 +32,9 @@
     <section class="tree-stage">
       <mat-tree class="users-tree" [dataSource]="visibleNodes" [treeControl]="treeControl" [trackBy]="trackByTreeItem">
         <mat-tree-node *matTreeNodeDef="let node; when: isUserNode" matTreeNodePadding [matTreeNodePaddingIndent]="24">
-          <app-user-tree-node [id]="currentUserId ?? ''" [node]="node" (toggleNode)="toggleNode(node)"
-            (retryLoad)="retryNode(node)" (addChild)="openCreateUserDialog()"
+          <app-user-tree-node [id]="currentUserId ?? ''" [node]="node" [showTransfer]="true"
+            [showChangePassword]="true" [showTransferForAll]="false" [showAddChild]="true"
+            (toggleNode)="toggleNode(node)" (retryLoad)="retryNode(node)" (addChild)="openCreateUserDialog()"
             (transferBalance)="openTransferBalanceDialog(node)" (changePassword)="openChangePasswordDialog(node)" />
         </mat-tree-node>
 

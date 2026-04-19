@@ -1,0 +1,73 @@
+<section class="admin-users-page">
+
+  <!-- HEADER -->
+  <div class="admin-users-header">
+    <div>
+      <h1>Manage Users</h1>
+      <p>Scroll to load more users automatically</p>
+    </div>
+  </div>
+
+  <!-- USER GRID -->
+  <div class="admin-user-grid">
+
+    <a
+      class="admin-user-card"
+      *ngFor="let user of users; trackBy: trackByUserId"
+      [routerLink]="['/admin/user', user._id]"
+    >
+      <mat-card>
+
+        <div class="user-card-content">
+
+          <div class="user-card-title">
+            <strong>{{ user.name }}</strong>
+            <span>Level {{ user.level }}</span>
+          </div>
+
+          <div>
+            <p><strong>Balance</strong></p>
+            <p>{{ user.balance | currency:'INR' }}</p>
+          </div>
+
+        </div>
+
+        <div class="user-card-footer">
+          <span>{{ user._id }}</span>
+          <button mat-stroked-button>View</button>
+        </div>
+
+      </mat-card>
+    </a>
+
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading" class="page-state">
+    <mat-spinner></mat-spinner>
+    <p>Loading users...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="error" class="page-state">
+    <p>{{ error }}</p>
+    <button mat-flat-button color="primary" (click)="retry()">
+      Retry
+    </button>
+  </div>
+
+  <!-- EMPTY -->
+  <div *ngIf="!isLoading && !error && users.length === 0" class="page-state">
+    <p>No users found</p>
+  </div>
+
+  <!-- LOAD MORE -->
+  <div *ngIf="isLoadingMore" class="page-state">
+    <mat-spinner diameter="30"></mat-spinner>
+    <p>Loading more...</p>
+  </div>
+
+  <!-- SCROLL TRIGGER -->
+  <div #scrollAnchor class="scroll-anchor"></div>
+
+</section>
